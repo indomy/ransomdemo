@@ -35,7 +35,7 @@ func main() {
 		}
 
 		// Simpan data terenkripsi ke file
-		outputFile := file + ".enc"
+		outputFile := file + ".croot"
 		err = os.WriteFile(outputFile, encryptedData, 0644)
 		if err != nil {
 			return err
