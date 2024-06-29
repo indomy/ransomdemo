@@ -25,17 +25,12 @@ func main() {
 		}
 
 		// Abaikan direktori itu sendiri
-		if file == "." {
+		if fi.IsDir() {
 			return nil
 		}
-
 		// Baca file
 		data, err := os.ReadFile(file)
 		if err != nil {
-			// Jika file adalah direktori, abaikan saja
-			if os.IsNotExist(err) {
-				return nil
-			}
 			return err
 		}
 
