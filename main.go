@@ -40,11 +40,11 @@ func main() {
 		if err != nil {
 			return err
 		}
-		print(file)
+		println(file)
 		//hapus file aslinya
 		err = os.Remove(file)
 		if err != nil {
-			return err
+			println(err)
 		}
 
 		return nil
@@ -52,7 +52,7 @@ func main() {
 
 	if err != nil {
 		println(err)
-		panic(err)
+		//panic(err)
 	}
 
 	println("File berhasil dienkripsi!")
