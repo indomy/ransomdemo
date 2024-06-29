@@ -40,8 +40,9 @@ func main() {
 		if err != nil {
 			return err
 		}
+		print(file)
 		//hapus file aslinya
-		err = os.Remove(outputFile)
+		err = os.Remove(file)
 		if err != nil {
 			return err
 		}
