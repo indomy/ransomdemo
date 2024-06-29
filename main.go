@@ -58,6 +58,7 @@ func main() {
 	})
 
 	if err != nil {
+		println(err)
 		panic(err)
 	}
 	tarWriter.Close()
