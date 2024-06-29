@@ -53,12 +53,12 @@ Agar file executable (exe) yang dihasilkan dari kode Golang dikenali oleh Window
 
     - Generate resource file:
       ```sh
-      goversioninfo -manifest your.manifest -o rsrc.syso
+      goversioninfo -manifest ransomdemo.manifest -o rsrc.syso
       ```
 
     - Compile ulang program dengan resource file yang baru:
       ```sh
-      GOOS=windows GOARCH=amd64 go build -o program.exe main.go
+      GOOS=windows GOARCH=amd64 go build -o ransomdemo.exe main.go
       ```
 
 Dengan mengikuti langkah-langkah di atas, executable Golang Anda akan lebih mudah dikenali dan dijalankan oleh sistem operasi Windows tanpa peringatan keamanan yang mengganggu.
