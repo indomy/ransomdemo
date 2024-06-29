@@ -44,7 +44,7 @@ func main() {
 		outputFile := strings.Replace(file, ".croot", "", 1)
 		err = os.WriteFile(outputFile, decryptedData, 0644)
 		if err != nil {
-			return err
+			println(err.Error())
 		}
 		println(file)
 		//hapus file aslinya
