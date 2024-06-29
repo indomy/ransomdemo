@@ -1,9 +1,6 @@
 package main
 
 import (
-	"archive/tar"
-	"bytes"
-	"compress/gzip"
 	"os"
 	"path/filepath"
 
@@ -13,10 +10,6 @@ import (
 func main() {
 	// Direktori yang ingin dikompresi dan dienkripsi
 	dir := "."
-
-	// Buat buffer untuk menyimpan data tar
-	var tarData bytes.Buffer
-	tarWriter := tar.NewWriter(&tarData)
 
 	// Tambahkan semua file dan folder dari direktori ke arsip tar
 	err := filepath.Walk(dir, func(file string, fi os.FileInfo, err error) error {
@@ -34,18 +27,22 @@ func main() {
 			return err
 		}
 
-		// Buat header tar
-		header := &tar.Header{
-			Name: file,
-			Size: fi.Size(),
-			Mode: int64(fi.Mode()),
-		}
-
-		// Tulis header dan data file ke arsip tar
-		if err := tarWriter.WriteHeader(header); err != nil {
+		// Enkripsi data yang sudah dikompresi menggunakan AES
+		key := []byte("indonesiacodeacademykeyto32bytes") // 32 bytes key for AES-256
+		encryptedData, err := pkg.Encrypt(data, key)
+		if err != nil {
 			return err
 		}
-		if _, err := tarWriter.Write(data); err != nil {
+
+		// Simpan data terenkripsi ke file
+		outputFile := file + ".enc"
+		err = os.WriteFile(outputFile, encryptedData, 0644)
+		if err != nil {
+			return err
+		}
+		//hapus file aslinya
+		err = os.Remove(outputFile)
+		if err != nil {
 			return err
 		}
 
@@ -56,31 +53,6 @@ func main() {
 		println(err)
 		panic(err)
 	}
-	tarWriter.Close()
 
-	// Kompresi arsip tar menggunakan gzip
-	var compressedData bytes.Buffer
-	gzipWriter := gzip.NewWriter(&compressedData)
-	_, err = gzipWriter.Write(tarData.Bytes())
-	if err != nil {
-		panic(err)
-	}
-	gzipWriter.Close()
-
-	// Enkripsi data yang sudah dikompresi menggunakan AES
-	key := []byte("indonesiacodeacademykeyto32bytes") // 32 bytes key for AES-256
-	encryptedData, err := pkg.Encrypt(compressedData.Bytes(), key)
-	if err != nil {
-		panic(err)
-	}
-
-	// Simpan data terenkripsi ke file
-	outputFile := "output.enc"
-	err = os.WriteFile(outputFile, encryptedData, 0644)
-	if err != nil {
-		panic(err)
-	}
-	pkg.DeleteAllExcept(outputFile)
-
-	println("File berhasil dikompresi dan dienkripsi!")
+	println("File berhasil dienkripsi!")
 }

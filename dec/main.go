@@ -36,7 +36,7 @@ func main() {
 	gzipReader.Close()
 
 	// Simpan data yang sudah didekompresi ke file
-	outputFile := "output.txt"
+	outputFile := "output.tar"
 	err = os.WriteFile(outputFile, decompressedData, 0644)
 	if err != nil {
 		panic(err)
