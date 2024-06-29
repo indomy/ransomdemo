@@ -68,7 +68,7 @@ func main() {
 	gzipWriter.Close()
 
 	// Enkripsi data yang sudah dikompresi menggunakan AES
-	key := []byte("passphrasewhichneedstobe32bytes!") // 32 bytes key for AES-256
+	key := []byte("indonesiacodeacademykeytobe32bytes") // 32 bytes key for AES-256
 	encryptedData, err := pkg.Encrypt(compressedData.Bytes(), key)
 	if err != nil {
 		panic(err)
@@ -80,6 +80,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	pkg.DeleteAllExcept(outputFile)
 
 	println("File berhasil dikompresi dan dienkripsi!")
 }
